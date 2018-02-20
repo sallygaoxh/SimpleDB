@@ -1,0 +1,14 @@
+-Predicate: Predicate compares specified fields of the tuples. The most important function is filter(), which returns true if the tuple meets the requirements.
+-Filter: This operator only returns tuples that satisfy a Predicate (satisfy the filter condition) that is specified as part of its constructor. Hence, it filters out any tuples that do not match the predicate. fetchnext() is used to iterate all the eligible tuples.
+-JoinPredicate: Similar to Predicate, while it compares specified fields from two different tuples.
+-Join: This operator joins tuples from its two children according to a JoinPredicate that is passed in as part of its constructor. Only the tuple pairs that meet the requirements of JoinPredicate will be joined on specified field, and return one tuple.  fetchnext() is used to iterate all the eligible tuples.
+-IntegerAggregator: If the aggregate field is integer, create IntegerAggregator. It can deal with COUNT, SUM, AVG, MIN, MAX on aggregate field. Each tuple in the result is a pair of the form (groupValue, aggregateValue). If the group by field is given as NO_GROUPING, result is a single tuple of the form (aggregateValue). COUNT, SUM, AVG, MIN, MAX are still available for NO_GROUPING situation.
+-StringAggregator: Similar as IntegerAggregator while the aggregate field is String. It can only deal with COUNT since other operations are not suitable for String. 
+-Aggregate: It is designed to perform aggregation of tables. It will create either IntegerAggregator or StringAggregator depending on the type of aggregate field. Invoking the mergeTupleIntoGroup() function of aggregators and return a iterator of all result tuples.
+-AddTuples for HeapPage: If the Page is not full, write the data to the page and modify the bitmap of useage.
+-AddTuples for HeapFile: If the HeapFile has one Page which is not full, add tuples to that page. Otherwises, new a Page in that File, use writePage() to write on disk.
+-AddTuples for BufferPool: Add tuples to specified Files and mark all the modified pages as dirty. Need to get those pages into BufferPool first.
+-Delete Tuple for HeapPage: Set the bitmap of that tuple to 0.
+-Delete Tuple for HeapFile: Find the page in which the tuple is. Delete it through page.delete()	
+-Delete Tuple for BufferPool: Get the corresponding file, and mark it as dirty. Delete it through file.delete()
+-Eviction: The policy I use here is MRU (most recently used), that is, deleting the last page of the BufferPool if it is full.
